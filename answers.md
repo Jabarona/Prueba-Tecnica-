@@ -26,6 +26,7 @@ Finalmente, el Pipe se encarga de la validación y la transformación justo ante
    - Lo podría evitar de una manera que cuando los 2 usuarios traten de comprar el último producto se le pone un tiempo al producto osea como un bloqueo ya que el primer usuario lo eligio primero entonces tendra un tiempo donde el producto estara bloqeuado y no le sale a los demas usuarios pasado el tiempo y si no se concreto la venta , volveria el articulo a estar disponible y asi evitamos que se compre al mismo tiempo por 2 usuarios al estar bloqueado el prodcuto solo por 1
 
 # Parte 2 – Análisis y Debugging
+
 **Identifique al menos 5 problemas de arquitectura o diseño.**
 - Los 5 problemas de arquitectura y diseño:
 
@@ -42,3 +43,14 @@ Mala arquitectura (Responsabilidad): El servicio está actuando como base de dat
 
 **Explique cómo refactorizaría esta implementación en un proyecto real de NestJS.**
 Eliminaría el array en memoria e inyectaría una herramienta como PrismaService o un Repository de TypeORM en el constructor para interactuar con una base de datos real (PostgreSQL, por ejemplo). Crearía clases DTO (Data Transfer Objects) como CreateOrderDto y UpdateOrderStatusDto utilizando class-validator para asegurar que los datos que entran al servicio tienen el formato y tipo correctos. Convertiría todos los métodos en asíncronos (async create(...), async findAll()), utilizando await para las llamadas a la base de datos.En el método updateStatus (y agregaría un findOne), primero buscaría la orden en la base de datos. Si no existe, lanzaría un error controlado de NestJS: throw new NotFoundException('Orden no encontrada'), devolviendo un error 404 limpio al cliente.
+
+# Parte 4 – Diseño de Arquitectura
+**¿Cómo escalaría esta API para soportar 1000 requests por segundo?**
+ - Para escalar esta API a ese nivel de tráfico, implementaría un escalamiento horizontal levantando múltiples instancias de la aplicación (usando Docker Swarm ) detrás de un balanceador de carga, como Nginx, para distribuir las peticiones equitativamente. Además, integraría un sistema de caché con Redis para almacenar las respuestas de las consultas más frecuentes (como el listado general de tareas) y así evitar golpear la base de datos repetidamente.
+ **¿Qué cambios haría si el sistema creciera a millones de tareas?**
+ - El primer cambio crítico sería agregar índices (@@index) en la base de datos para los campos que más se utilizan en los filtros, como el estado y la prioridad, asegurando que las búsquedas sigan siendo rápidas sin importar el volumen de datos. También modificaría el endpoint de listado para hacer obligatoria la paginación  evitando que una petición intente cargar millones de registros de golpe y sature la memoria de Node.js.
+
+  **¿Cómo implementaría autenticación JWT en este sistema?**
+  - Utilizaría los paquetes oficiales @nestjs/jwt y @nestjs/passport. Primero, crearía un módulo de autenticación con un endpoint de login que valide las credenciales del usuario y retorne un token JWT firmado. Luego, implementaría un Guard personalizado (como JwtAuthGuard) y lo aplicaría globalmente o en las rutas de tareas específicas. Este Guard se encargaría de interceptar la petición entrante, verificar la validez y firma del token, extraer el payload (los datos del usuario) e inyectarlo en el objeto request.user. Así, el controlador siempre sabrá exactamente quién está realizando la acción antes de procesarla.
+  **¿Cómo manejaría procesamiento asincrónico para tareas pesadas?**
+  - Para tareas que consumen mucho tiempo, como la generación de reportes en PDF o el envío masivo de correos, implementaría un sistema de colas de mensajes (Message Queue) utilizando herramientas como BullMQ apoyado en Redis, o RabbitMQ. La arquitectura funcionaría de manera que la API principal solo recibe la petición, encola el evento y responde inmediatamente al cliente con un código HTTP 202 Accepted indicando que el proceso está en marcha. Mientras tanto, un servidor secundario (Worker) corriendo en segundo plano consume los eventos de esa cola y ejecuta el trabajo pesado sin bloquear el Event Loop de la aplicación principal.
