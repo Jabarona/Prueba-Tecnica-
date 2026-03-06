@@ -19,7 +19,6 @@ export class TasksController {
     return this.tasksService.findAll(filterDto);
   }
 
-  // Usamos ParseUUIDPipe para validar que el ID sea un UUID válido (Requisito de manejo de errores)
   @Get(':id')
   findOne(@Param('id', ParseUUIDPipe) id: string) {
     return this.tasksService.findOne(id);

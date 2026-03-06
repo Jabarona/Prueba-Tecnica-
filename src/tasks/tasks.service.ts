@@ -9,14 +9,12 @@ import { TaskStatus } from '@prisma/client';
 export class TasksService {
   constructor(private prisma: PrismaService) {}
 
-  // 1. Crear tarea
   async create(createTaskDto: CreateTaskDto) {
     return this.prisma.task.create({
       data: createTaskDto,
     });
   }
 
-  // 2. Listar tareas con filtros
   async findAll(filterDto: GetTasksFilterDto) {
     const { status, priority } = filterDto;
     return this.prisma.task.findMany({
@@ -27,7 +25,6 @@ export class TasksService {
     });
   }
 
-  // 3. Obtener tarea por ID
   async findOne(id: string) {
     const task = await this.prisma.task.findUnique({ where: { id } });
     if (!task) {
@@ -36,27 +33,24 @@ export class TasksService {
     return task;
   }
 
-  // 4. Actualizar tarea completa
   async update(id: string, updateTaskDto: UpdateTaskDto) {
-    await this.findOne(id); // Verificamos que exista primero
+    await this.findOne(id);
     return this.prisma.task.update({
       where: { id },
       data: updateTaskDto,
     });
   }
 
-  // 5. Cambiar solo el estado
   async updateStatus(id: string, status: TaskStatus) {
-    await this.findOne(id); // Verificamos que exista
+    await this.findOne(id);
     return this.prisma.task.update({
       where: { id },
       data: { status },
     });
   }
 
-  // 6. Eliminar tarea
   async remove(id: string) {
-    await this.findOne(id); // Verificamos que exista
+    await this.findOne(id);
     return this.prisma.task.delete({
       where: { id },
     });
