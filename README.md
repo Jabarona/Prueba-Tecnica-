@@ -41,6 +41,6 @@ npm run test
 
 **Jarvi Barona**
 
-* 🌐 **Portafolio:** [Visitar mi sitio web]https://jarvibarona.cl/
-* 💼 **LinkedIn:** [Mi perfil profesional]https://www.linkedin.com/in/jarvi-barona-burbano-4a0998252/
+* 🌐 **Portafolio:** Visitar mi sitio web : https://jarvibarona.cl/
+* 💼 **LinkedIn:** Mi perfil profesional : https://www.linkedin.com/in/jarvi-barona-burbano-4a0998252/
 
