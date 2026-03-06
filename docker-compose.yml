@@ -1,0 +1,12 @@
+version: '3.8'
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: tasks-postgres-db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: tasks_db
+    ports:
+      - "5432:5432"
