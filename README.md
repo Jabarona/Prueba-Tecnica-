@@ -34,3 +34,13 @@ Para ejecutar las pruebas unitarias localmente (requiere Node.js):
 npm install
 npm run test
 ```
+
+---
+
+## 👨‍💻 Autor
+
+**Jarvi Barona**
+
+* 🌐 **Portafolio:** [Visitar mi sitio web]https://jarvibarona.cl/
+* 💼 **LinkedIn:** [Mi perfil profesional]https://www.linkedin.com/in/jarvi-barona-burbano-4a0998252/
+
